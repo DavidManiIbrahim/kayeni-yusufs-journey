@@ -144,7 +144,13 @@
     border-color: var(--color-border);
   }
 
+  html,
   body {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
     background: var(--gradient-dark);
     color: var(--color-foreground);
     font-family: var(--font-body);

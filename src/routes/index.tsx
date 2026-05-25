@@ -59,7 +59,7 @@ const SplitText = ({ text, className = "" }: { text: string; className?: string 
       aria-label={text}
     >
       {text.split(" ").map((word, i) => (
-        <span key={i} aria-hidden="true" className="inline-block overflow-hidden align-bottom mr-[0.25em]">
+        <span key={i} aria-hidden="true" className="inline-block overflow-hidden align-bottom mr-[0.25em] min-h-[1.1em]">
           <motion.span
             className="inline-block"
             variants={{
@@ -94,7 +94,7 @@ function Hero() {
         className="absolute top-0 left-0 right-0 flex justify-between items-center p-6 md:p-10 text-xs uppercase tracking-[0.3em] text-muted-foreground"
       >
         <span>KY · Est. Legacy</span>
-        <span className="hidden md:block">Lagos · Nigeria</span>
+        <span className="hidden md:block">Adamawa · Nigeria</span>
       </nav>
 
       <div className="relative px-6 md:px-16 pb-20 md:pb-32 max-w-7xl">
@@ -106,7 +106,7 @@ function Hero() {
         >
           A life in chapters
         </motion.p>
-        <h1 id="hero-heading" className="text-[15vw] md:text-[10vw] leading-[0.85] font-black">
+        <h1 id="hero-heading" className="text-[15vw] md:text-[10vw] leading-[0.95] font-black">
           <SplitText text="Kayeni" className="block" />
           <span className="block text-gradient-gold italic font-light">
             <SplitText text="Yusuf." />
@@ -299,7 +299,7 @@ function Timeline() {
 const stats: { to: number; suffix?: string; prefix?: string; label: string; display?: string }[] = [
   { to: 1, label: "ICAN Chartership", display: "ICAN" },
   { to: 4, suffix: "+", label: "Ventures" },
-  { to: 20, suffix: "yr", label: "Building" },
+  { to: 20, suffix: "yrs", label: "Building" },
   { to: 0, label: "Curiosity", display: "∞" },
 ];
 
@@ -324,7 +324,15 @@ function Counter({ to, prefix = "", suffix = "", display }: { to: number; prefix
 
   return (
     <span ref={ref} aria-label={display ?? `${prefix}${to}${suffix}`}>
-      {display ?? `${prefix}${val}${suffix}`}
+      {display ? (
+        display
+      ) : (
+        <>
+          {prefix && <span className="tabular-nums text-gradient-gold">{prefix}</span>}
+          <span className="tabular-nums text-gradient-gold">{val}</span>
+          {suffix && <span className="tabular-nums text-gradient-gold">{suffix}</span>}
+        </>
+      )}
     </span>
   );
 }
@@ -376,18 +384,84 @@ function Footer() {
 }
 
 function MotionToggle() {
-  const { reduce, toggleReduce, userOverride } = useMotionCtx();
+  return null;
+}
+
+function MousePointer() {
+  const x = useMotionValue(-100);
+  const y = useMotionValue(-100);
+
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      x.set(event.clientX);
+      y.set(event.clientY);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    document.body.style.cursor = "none";
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      document.body.style.cursor = "";
+    };
+  }, [x, y]);
+
   return (
-    <button
-      type="button"
-      onClick={toggleReduce}
-      aria-pressed={reduce}
-      aria-label={reduce ? "Enable animations" : "Reduce motion"}
-      title={userOverride === null ? "Following system preference" : "User override active"}
-      className="fixed bottom-4 right-4 z-50 min-h-11 min-w-11 px-3 rounded-full border border-border bg-background/80 backdrop-blur text-[10px] uppercase tracking-[0.2em] text-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors"
+    <motion.div
+      className="pointer-events-none fixed left-0 top-0 z-50"
+      style={{ x, y, translateX: "-50%", translateY: "-50%" }}
+      animate={{ rotate: [0, 15, -15, 0], scale: [1, 1.1, 0.95, 1] }}
+      transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
     >
-      {reduce ? "Motion: Off" : "Motion: On"}
-    </button>
+      <div className="relative flex h-5 w-5 items-center justify-center rounded-full border border-primary/80 bg-primary/20 shadow-[0_0_0_2px_rgba(255,255,255,0.12)]">
+        <div className="absolute inset-[6px] rounded-full bg-primary" />
+      </div>
+    </motion.div>
+  );
+}
+
+function SplashDecorations() {
+  const blocks = Array.from({ length: 50 }, (_, index) => index);
+
+  return (
+    <motion.div
+      aria-hidden="true"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1.3, ease: EASE }}
+      className="absolute inset-0 hidden md:block"
+    >
+      {blocks.map((index) => {
+        const isCircle = index % 7 === 0;
+        const size = 4 + (index % 4) * 2;
+        const top = (index * 11) % 90 + 4;
+        const left = (index * 17) % 92 + 3;
+        const opacity = 0.3 + (index % 4) * 0.12;
+        const borderColor = index % 2 === 0 ? "border-primary/35" : "border-secondary/35";
+        const bgColor = index % 3 === 0 ? "bg-primary/15" : "bg-secondary/20";
+        const shadow = index % 5 === 0 ? "shadow-[0_0_24px_rgba(255,255,255,0.08)]" : "";
+
+        return (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{
+              opacity,
+              rotate: [0, 10, -10, 0],
+              skewX: [0, 6, -6, 0],
+              scale: [0.92, 1.05, 0.92],
+            }}
+            transition={{ duration: 3.2 + (index % 6) * 0.18, repeat: Infinity, ease: "easeInOut", delay: (index % 5) * 0.08 }}
+            className={`${isCircle ? "rounded-full" : "rounded-2xl"} ${borderColor} ${bgColor} ${shadow} absolute`}
+            style={{
+              width: `${size}rem`,
+              height: `${size}rem`,
+              top: `${top}%`,
+              left: `${left}%`,
+            }}
+          />
+        );
+      })}
+    </motion.div>
   );
 }
 
@@ -402,7 +476,7 @@ function Splash({ onDone, reduce }: { onDone: () => void; reduce: boolean }) {
       return () => clearTimeout(t);
     }
     const controls = animate(mv, 100, {
-      duration: 2.6,
+      duration: 4,
       ease: [0.16, 1, 0.3, 1],
       onUpdate: (v) => setPct(Math.round(v)),
       onComplete: () => setTimeout(onDone, 450),
@@ -416,12 +490,14 @@ function Splash({ onDone, reduce }: { onDone: () => void; reduce: boolean }) {
       aria-label="Loading"
       initial={{ opacity: 1 }}
       exit={{ opacity: 0, transition: { duration: 0.6, ease: EASE } }}
-      className="fixed inset-0 z-[100] bg-background flex flex-col justify-between p-6 md:p-10 noise"
+      className="fixed inset-0 z-100 w-screen h-screen min-h-screen bg-background flex flex-col justify-between p-6 md:p-10 noise overflow-hidden"
     >
       <div className="flex justify-between items-center text-[10px] uppercase tracking-[0.4em] text-muted-foreground">
         <span>KY · Est. Legacy</span>
         <span>Loading</span>
       </div>
+
+      <SplashDecorations />
 
       <div className="flex flex-col items-start gap-6">
         <motion.div
@@ -467,6 +543,16 @@ function Index() {
     } catch {}
   }, []);
 
+  // Disable scrolling while splash is active
+  useEffect(() => {
+    if (!splashDone) {
+      document.documentElement.style.overflow = "hidden";
+      return () => {
+        document.documentElement.style.overflow = "";
+      };
+    }
+  }, [splashDone]);
+
   const reduce = userOverride ?? systemReduce;
   const mobile = useIsMobile();
 
@@ -483,6 +569,7 @@ function Index() {
       <AnimatePresence>
         {!splashDone && <Splash key="splash" onDone={() => setSplashDone(true)} reduce={reduce} />}
       </AnimatePresence>
+      <MousePointer />
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-background focus:text-foreground focus:border focus:border-border focus:rounded-sm"
