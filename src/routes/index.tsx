@@ -179,7 +179,7 @@ function Bio() {
       <motion.p variants={fadeUp} className="mt-10 max-w-2xl text-lg text-muted-foreground leading-relaxed">
         Kayeni Yusuf is a chartered accountant whose career has refused to sit
         still in a single office. Beyond the columns of debit and credit, he is
-        a serial entrepreneur — a man whose curiosity has carried him from
+        a serial entrepreneur whose curiosity has carried him from
         poultry pens at dawn to the high-strung world of imported pedigree dogs.
       </motion.p>
       <motion.p variants={fadeUp} className="mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed">
