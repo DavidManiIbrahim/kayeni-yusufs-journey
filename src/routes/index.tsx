@@ -34,7 +34,7 @@ function useMotionCtx() {
   return useContext(MotionCtx);
 }
 
-// Duration helpers — shorter on mobile, instant when reduced.
+// Duration helpers: shorter on mobile, instant when reduced.
 function useDurations() {
   const { reduce, mobile } = useMotionCtx();
   if (reduce) return { fast: 0, base: 0, slow: 0, stagger: 0, delay: 0 };
