@@ -391,9 +391,72 @@ function MotionToggle() {
   );
 }
 
+function Splash({ onDone, reduce }: { onDone: () => void; reduce: boolean }) {
+  const mv = useMotionValue(0);
+  const [pct, setPct] = useState(0);
+
+  useEffect(() => {
+    if (reduce) {
+      setPct(100);
+      const t = setTimeout(onDone, 250);
+      return () => clearTimeout(t);
+    }
+    const controls = animate(mv, 100, {
+      duration: 2.6,
+      ease: [0.16, 1, 0.3, 1],
+      onUpdate: (v) => setPct(Math.round(v)),
+      onComplete: () => setTimeout(onDone, 450),
+    });
+    return () => controls.stop();
+  }, [mv, onDone, reduce]);
+
+  return (
+    <motion.div
+      role="status"
+      aria-label="Loading"
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0, transition: { duration: 0.6, ease: EASE } }}
+      className="fixed inset-0 z-[100] bg-background flex flex-col justify-between p-6 md:p-10 noise"
+    >
+      <div className="flex justify-between items-center text-[10px] uppercase tracking-[0.4em] text-muted-foreground">
+        <span>KY · Est. Legacy</span>
+        <span>Loading</span>
+      </div>
+
+      <div className="flex flex-col items-start gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: EASE }}
+          className="text-5xl md:text-8xl font-display font-light leading-none"
+        >
+          <span className="block text-muted-foreground">Kayeni</span>
+          <span className="block text-gradient-gold italic">Yusuf.</span>
+        </motion.div>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <div className="flex justify-between items-baseline text-[10px] uppercase tracking-[0.4em] text-muted-foreground">
+          <span>A life in chapters</span>
+          <span className="tabular-nums text-foreground text-2xl md:text-3xl font-display">
+            {String(pct).padStart(3, "0")}
+          </span>
+        </div>
+        <div className="h-px w-full bg-border overflow-hidden">
+          <motion.div
+            style={{ width: `${pct}%` }}
+            className="h-full bg-gradient-to-r from-primary to-primary/40"
+          />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 function Index() {
   const systemReduce = useReducedMotion() ?? false;
   const [userOverride, setUserOverride] = useState<boolean | null>(null);
+  const [splashDone, setSplashDone] = useState(false);
 
   // Initialize from localStorage
   useEffect(() => {
@@ -417,6 +480,9 @@ function Index() {
 
   return (
     <MotionCtx.Provider value={{ reduce, mobile, toggleReduce, userOverride }}>
+      <AnimatePresence>
+        {!splashDone && <Splash key="splash" onDone={() => setSplashDone(true)} reduce={reduce} />}
+      </AnimatePresence>
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-background focus:text-foreground focus:border focus:border-border focus:rounded-sm"
