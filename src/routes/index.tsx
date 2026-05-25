@@ -199,7 +199,7 @@ const chapters = [
   {
     year: "BUSINESS",
     title: "Entrepreneur & Operator",
-    body: "Founded and managed multiple enterprises across consulting, trade, and agribusiness — bringing accounting rigor to industries that rarely see it.",
+    body: "Founded and managed multiple enterprises across consulting, trade, and agribusiness, bringing accounting rigor to industries that rarely see it.",
   },
   {
     year: "FARM",
