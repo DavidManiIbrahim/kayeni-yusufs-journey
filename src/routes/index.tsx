@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { motion, useScroll, useTransform, useReducedMotion, type Variants } from "framer-motion";
+import { motion, useScroll, useTransform, useReducedMotion, useInView, useMotionValue, animate, AnimatePresence, type Variants } from "framer-motion";
 import { useRef, createContext, useContext, useState, useEffect, useId } from "react";
 import portrait from "@/assets/portrait.jpg";
 import { useIsMobile } from "@/hooks/use-mobile";
