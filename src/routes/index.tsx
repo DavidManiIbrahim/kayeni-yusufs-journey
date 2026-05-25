@@ -172,7 +172,7 @@ function Bio() {
   const fadeUp = useFadeUp();
   return (
     <Section ariaLabelledBy="bio-heading">
-      <motion.span variants={fadeUp} className="text-xs uppercase tracking-[0.4em] text-primary">01 — Portrait</motion.span>
+      <motion.span variants={fadeUp} className="text-xs uppercase tracking-[0.4em] text-primary">01 · Portrait</motion.span>
       <motion.h2 id="bio-heading" variants={fadeUp} className="mt-6 text-4xl md:text-7xl font-light max-w-4xl leading-tight">
         A man of <em className="text-gradient-gold not-italic font-normal">ledgers</em>, livestock, and long bets.
       </motion.h2>
